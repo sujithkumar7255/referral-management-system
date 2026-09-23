@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Referral Management</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f5f7fa;
+    color:#24313f;
+}
+
+/* HEADER */
+.header{
+    height:64px;
+    background:#087b83;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 30px;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.logo span{
+    color:#ff8a32;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.notification{
+    font-size:20px;
+    cursor:pointer;
+}
+
+.profile{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#fff;
+    color:#087b83;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+/* LAYOUT */
+.container{
+    display:flex;
+    min-height:calc(100vh - 64px);
+}
+
+.sidebar{
+    width:230px;
+    background:white;
+    border-right:1px solid #e4e8ed;
+    padding:25px 15px;
+}
+
+.sidebar h4{
+    font-size:12px;
+    color:#9aa3ad;
+    margin:10px 12px;
+    text-transform:uppercase;
+}
+
+.nav-item{
+    padding:13px 15px;
+    border-radius:8px;
+    margin:5px 0;
+    cursor:pointer;
+    color:#52606d;
+}
+
+.nav-item:hover,
+.nav-item.active{
+    background:#e8f7f8;
+    color:#087b83;
+    font-weight:bold;
+}
+
+.main{
+    flex:1;
+    padding:28px;
+    overflow:auto;
+}
+
+/* PAGE TITLE */
+.page-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.page-title h1{
+    font-size:26px;
+}
+
+.page-title p{
+    color:#7c8793;
+    margin-top:5px;
+}
+
+.btn{
+    border:none;
+    padding:11px 18px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-primary{
+    background:#ff7a22;
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#e86613;
+}
+
+.btn-secondary{
+    background:#eef2f5;
+    color:#45515e;
+}
+
+/* STATS */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:25px;
+}
+
+.stat-card{
+    background:white;
+    border:1px solid #e5e9ed;
+    border-radius:10px;
+    padding:20px;
+    box-shadow:0 2px 7px rgba(0,0,0,.04);
+}
+
+.stat-title{
+    color:#7d8791;
+    font-size:14px;
+}
+
+.stat-number{
+    font-size:28px;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+.stat-info{
+    color:#9ba3aa;
+    font-size:12px;
+}
+
+/* TABLE CARD */
+.card{
+    background:white;
+    border:1px solid #e4e8ed;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+
+.card-header{
+    padding:20px;
+    border-bottom:1px solid #e8ebee;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.card-header h2{
+    font-size:18px;
+}
+
+.toolbar{
+    padding:15px 20px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.search{
+    flex:1;
+    min-width:220px;
+    padding:11px 13px;
+    border:1px solid #dce2e7;
+    border-radius:7px;
+    outline:none;
+}
+
+select{
+    padding:11px 13px;
+    border:1px solid #dce2e7;
+    border-radius:7px;
+    background:white;
+    color:#45515e;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#f8fafb;
+    color:#7d8791;
+    font-size:12px;
+    text-align:left;
+    padding:14px 18px;
+    text-transform:uppercase;
+}
+
+td{
+    padding:16px 18px;
+    border-top:1px solid #edf0f2;
+    font-size:14px;
+}
+
+tbody tr:hover{
+    background:#fafcfd;
+}
+
+/* BADGES */
+.badge{
+    padding:5px 9px;
+    border-radius:15px;
+    font-size:11px;
+    font-weight:bold;
+    display:inline-block;
+}
+
+.status-new{
+    background:#eaf3ff;
+    color:#2875c7;
+}
+
+.status-contacted{
+    background:#fff5dd;
+    color:#b87a00;
+}
+
+.status-accepted{
+    background:#e7f8ef;
+    color:#16804a;
+}
+
+.status-scheduled{
+    background:#eeeaff;
+    color:#6849c6;
+}
+
+.status-onboarded{
+    background:#e4f7f7;
+    color:#087b83;
+}
+
+.status-rejected{
+    background:#ffe9e9;
+    color:#d13c3c;
+}
+
+.high{
+    color:#d13c3c;
+    font-weight:bold;
+}
+
+.medium{
+    color:#c17a00;
+    font-weight:bold;
+}
+
+.low{
+    color:#18804c;
+    font-weight:bold;
+}
+
+.view-btn{
+    color:#087b83;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* PAGINATION */
+.pagination{
+    padding:16px 20px;
+    display:flex;
+    justify-content:space-between;
+    color:#7c8793;
+    font-size:13px;
+}
+
+/* MODAL */
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:200;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal-content{
+    background:white;
+    width:650px;
+    max-width:100%;
+    max-height:90vh;
+    overflow:auto;
+    border-radius:12px;
+}
+
+.modal-header{
+    padding:20px;
+    border-bottom:1px solid #e7ebee;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.close{
+    font-size:25px;
+    cursor:pointer;
+    color:#777;
+}
+
+.form{
+    padding:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.form-group.full{
+    grid-column:1 / -1;
+}
+
+.form-group label{
+    font-size:13px;
+    font-weight:bold;
+    color:#596571;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    padding:11px;
+    border:1px solid #dce2e7;
+    border-radius:6px;
+    outline:none;
+}
+
+textarea{
+    resize:vertical;
+    min-height:90px;
+}
+
+.modal-footer{
+    padding:18px 20px;
+    border-top:1px solid #e7ebee;
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+}
+
+/* DETAIL */
+.detail-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    padding:20px;
+}
+
+.detail-box{
+    background:#f8fafb;
+    padding:15px;
+    border-radius:8px;
+}
+
+.detail-box small{
+    display:block;
+    color:#8a949e;
+    margin-bottom:5px;
+}
+
+.workflow{
+    padding:20px;
+}
+
+.workflow-title{
+    font-weight:bold;
+    margin-bottom:18px;
+}
+
+.steps{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.step{
+    text-align:center;
+    position:relative;
+    flex:1;
+}
+
+.step-circle{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    margin:auto;
+    background:#dfe5e8;
+    color:#69747d;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.step.active .step-circle{
+    background:#087b83;
+    color:white;
+}
+
+.step p{
+    margin-top:8px;
+    font-size:11px;
+    color:#69747d;
+}
+
+.progress-line{
+    height:3px;
+    background:#dfe5e8;
+    flex:1;
+}
+
+.progress-line.active{
+    background:#087b83;
+}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+    .sidebar{
+        display:none;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:650px){
+    .main{
+        padding:15px;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .page-title{
+        align-items:flex-start;
+        gap:15px;
+        flex-direction:column;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .detail-grid{
+        grid-template-columns:1fr;
+    }
+
+    table{
+        min-width:850px;
+    }
+
+    .table-wrapper{
+        overflow-x:auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header">
+
+    <div class="logo">
+        <span>◆</span> ReferralCare
+    </div>
+
+    <div class="header-right">
+        <div class="notification">🔔</div>
+        <div class="profile">SV</div>
+    </div>
+
+</header>
+
+
+<div class="container">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <h4>Menu</h4>
+
+    <div class="nav-item active">
+        📊 Dashboard
+    </div>
+
+    <div class="nav-item">
+        👥 Referrals
+    </div>
+
+    <div class="nav-item">
+        📅 Visits
+    </div>
+
+    <div class="nav-item">
+        📝 Assessments
+    </div>
+
+    <div class="nav-item">
+        ❤️ Care Plans
+    </div>
+
+    <h4>Management</h4>
+
+    <div class="nav-item">
+        👨‍⚕️ Care Team
+    </div>
+
+    <div class="nav-item">
+        📄 Documents
+    </div>
+
+    <div class="nav-item">
+        ⚙️ Settings
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- TITLE -->
+    <div class="page-title">
+
+        <div>
+            <h1>Referral Management</h1>
+            <p>Track and manage patient referrals</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="openAddModal()">
+            + Add Referral
+        </button>
+
+    </div>
+
+
+    <!-- STATS -->
+    <section class="stats">
+
+        <div class="stat-card">
+            <div class="stat-title">Total Referrals</div>
+            <div class="stat-number" id="totalReferrals">422</div>
+            <div class="stat-info">All time</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Acceptance Rate</div>
+            <div class="stat-number">78.4%</div>
+            <div class="stat-info">All time</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Onboarding Rate</div>
+            <div class="stat-number">64.2%</div>
+            <div class="stat-info">All time</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Avg Time to Onboard</div>
+            <div class="stat-number">4.2</div>
+            <div class="stat-info">Days</div>
+        </div>
+
+    </section>
+
+
+    <!-- REFERRALS -->
+    <section class="card">
+
+        <div class="card-header">
+
+            <h2>122 Referrals</h2>
+
+            <div>
+                <button class="btn btn-secondary" onclick="importCSV()">
+                    Import
+                </button>
+
+                <button class="btn btn-secondary" onclick="exportData()">
+                    Export
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- FILTERS -->
+        <div class="toolbar">
+
+            <input
+                class="search"
+                id="searchInput"
+                type="text"
+                placeholder="Search name, service, client..."
+                onkeyup="filterTable()"
+            >
+
+            <select id="statusFilter" onchange="filterTable()">
+                <option value="">All Status</option>
+                <option>New</option>
+                <option>Contacted</option>
+                <option>Accepted</option>
+                <option>Scheduled</option>
+                <option>Onboarded</option>
+                <option>Rejected</option>
+            </select>
+
+            <select id="urgencyFilter" onchange="filterTable()">
+                <option value="">All Urgency</option>
+                <option>High</option>
+                <option>Medium</option>
+                <option>Low</option>
+            </select>
+
+            <select id="careFilter" onchange="filterTable()">
+                <option value="">All Care Types</option>
+                <option>Residential</option>
+                <option>Nursing</option>
+                <option>Dementia</option>
+                <option>Respite</option>
+            </select>
+
+        </div>
+
+
+        <!-- TABLE -->
+        <div class="table-wrapper">
+
+            <table id="referralTable">
+
+                <thead>
+
+                    <tr>
+                        <th>Patient</th>
+                        <th>Age</th>
+                        <th>Care Type</th>
+                        <th>Assigned To</th>
+                        <th>Urgency</th>
+                        <th>Status</th>
+                        <th>Submitted</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>
+                            <strong>Robert Johnson</strong><br>
+                            <small>555-0789</small>
+                        </td>
+                        <td>73</td>
+                        <td>Nursing</td>
+                        <td>Alex Mercer</td>
+                        <td class="low">Low</td>
+                        <td>
+                            <span class="badge status-onboarded">
+                                Onboarded
+                            </span>
+                        </td>
+                        <td>Dec 13, 2025</td>
+                        <td>
+                            <span class="view-btn"
+                            onclick="openDetails('Robert Johnson','73','Nursing','Alex Mercer','Low','Onboarded')">
+                            View
+                            </span>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            <strong>Emily Carter</strong><br>
+                            <small>555-1234</small>
+                        </td>
+                        <td>58</td>
+                        <td>Nursing</td>
+                        <td>Noah Smith</td>
+                        <td class="medium">Medium</td>
+                        <td>
+                            <span class="badge status-accepted">
+                                Accepted
+                            </span>
+                        </td>
+                        <td>Jan 10, 2026</td>
+                        <td>
+                            <span class="view-btn"
+                            onclick="openDetails('Emily Carter','58','Nursing','Noah Smith','Medium','Accepted')">
+                            View
+                            </span>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            <strong>Robert Johnson</strong><br>
+                            <small>555-0789</small>
+                        </td>
+                        <td>63</td>
+                        <td>Dementia</td>
+                        <td>Liam Johnson</td>
+                        <td class="high">High</td>
+                        <td>
+                            <span class="badge status-scheduled">
+                                Scheduled
+                            </span>
+                        </td>
+                        <td>Dec 13, 2025</td>
+                        <td>
+                            <span class="view-btn"
+                            onclick="openDetails('Robert Johnson','63','Dementia','Liam Johnson','High','Scheduled')">
+                            View
+                            </span>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            <strong>Michael Lee</strong><br>
+                            <small>555-5678</small>
+                        </td>
+                        <td>44</td>
+                        <td>Dementia</td>
+                        <td>Emma Watson</td>
+                        <td class="low">Low</td>
+                        <td>
+                            <span class="badge status-contacted">
+                                Contacted
+                            </span>
+                        </td>
+                        <td>Feb 8, 2026</td>
+                        <td>
+                            <span class="view-btn"
+                            onclick="openDetails('Michael Lee','44','Dementia','Emma Watson','Low','Contacted')">
+                            View
+                            </span>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            <strong>Sarah Brown</strong><br>
+                            <small>555-9012</small>
+                        </td>
+                        <td>72</td>
+                        <td>Dementia</td>
+                        <td>Olivia Brown</td>
+                        <td class="high">High</td>
+                        <td>
+                            <span class="badge status-rejected">
+                                Rejected
+                            </span>
+                        </td>
+                        <td>Mar 15, 2026</td>
+                        <td>
+                            <span class="view-btn"
+                            onclick="openDetails('Sarah Brown','72','Dementia','Olivia Brown','High','Rejected')">
+                            View
+                            </span>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            <strong>David Wilson</strong><br>
+                            <small>555-3412</small>
+                        </td>
+                        <td>68</td>
+                        <td>Respite</td>
+                        <td>Ethan Davis</td>
+                        <td class="high">High</td>
+                        <td>
+                            <span class="badge status-new">
+                                New
+                            </span>
+                        </td>
+                        <td>Mar 20, 2026</td>
+                        <td>
+                            <span class="view-btn"
+                            onclick="openDetails('David Wilson','68','Respite','Ethan Davis','High','New')">
+                            View
+                            </span>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="pagination">
+
+            <span>Items per page 10</span>
+
+            <span>1 – 6 of 122</span>
+
+        </div>
+
+    </section>
+
+</main>
+
+</div>
+
+
+<!-- ADD REFERRAL MODAL -->
+<div class="modal" id="addModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>New Referral Submission</h2>
+
+            <span class="close" onclick="closeAddModal()">
+                ×
+            </span>
+
+        </div>
+
+
+        <form class="form" onsubmit="submitReferral(event)">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input id="firstName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input id="lastName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date">
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email">
+                </div>
+
+                <div class="form-group">
+                    <label>Urgency Level</label>
+                    <select>
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Referral Source</label>
+                    <select>
+                        <option>Hospital</option>
+                        <option>GP</option>
+                        <option>Family</option>
+                        <option>Self</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Type of Care</label>
+                    <select>
+                        <option>Residential</option>
+                        <option>Nursing</option>
+                        <option>Dementia</option>
+                        <option>Respite</option>
+                    </select>
+                </div>
+
+                <div class="form-group full">
+                    <label>Primary Concern / Reason for Referral</label>
+                    <textarea placeholder="Enter patient concern..."></textarea>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeAddModal()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    Submit Referral
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- DETAILS MODAL -->
+<div class="modal" id="detailsModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>Referral Details</h2>
+
+            <span class="close" onclick="closeDetails()">
+                ×
+            </span>
+
+        </div>
+
+
+        <div class="detail-grid">
+
+            <div class="detail-box">
+                <small>Patient Name</small>
+                <strong id="dName"></strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Age</small>
+                <strong id="dAge"></strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Care Type</small>
+                <strong id="dCare"></strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Assigned To</small>
+                <strong id="dAssigned"></strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Urgency</small>
+                <strong id="dUrgency"></strong>
+            </div>
+
+            <div class="detail-box">
+                <small>Status</small>
+                <strong id="dStatus"></strong>
+            </div>
+
+        </div>
+
+
+        <div class="workflow">
+
+            <div class="workflow-title">
+                Referral Workflow
+            </div>
+
+            <div class="steps">
+
+                <div class="step active">
+                    <div class="step-circle">1</div>
+                    <p>New</p>
+                </div>
+
+                <div class="progress-line active"></div>
+
+                <div class="step active">
+                    <div class="step-circle">2</div>
+                    <p>Contacted</p>
+                </div>
+
+                <div class="progress-line active"></div>
+
+                <div class="step active">
+                    <div class="step-circle">3</div>
+                    <p>Accepted</p>
+                </div>
+
+                <div class="progress-line"></div>
+
+                <div class="step">
+                    <div class="step-circle">4</div>
+                    <p>Scheduled</p>
+                </div>
+
+                <div class="progress-line"></div>
+
+                <div class="step">
+                    <div class="step-circle">5</div>
+                    <p>Onboarded</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+            <button class="btn btn-secondary"
+                    onclick="closeDetails()">
+                Close
+            </button>
+
+            <button class="btn btn-primary"
+                    onclick="alert('Referral updated successfully!')">
+                Update Referral
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ADD REFERRAL */
+
+function openAddModal(){
+    document.getElementById("addModal").style.display="flex";
+}
+
+function closeAddModal(){
+    document.getElementById("addModal").style.display="none";
+}
+
+
+/* SUBMIT REFERRAL */
+
+function submitReferral(event){
+
+    event.preventDefault();
+
+    const first =
+        document.getElementById("firstName").value;
+
+    const last =
+        document.getElementById("lastName").value;
+
+    alert(
+        "Referral submitted successfully for "
+        + first + " " + last
+    );
+
+    closeAddModal();
+
+}
+
+
+/* DETAILS */
+
+function openDetails(
+    name,
+    age,
+    care,
+    assigned,
+    urgency,
+    status
+){
+
+    document.getElementById("dName").textContent=name;
+    document.getElementById("dAge").textContent=age;
+    document.getElementById("dCare").textContent=care;
+    document.getElementById("dAssigned").textContent=assigned;
+    document.getElementById("dUrgency").textContent=urgency;
+    document.getElementById("dStatus").textContent=status;
+
+    document.getElementById("detailsModal").style.display="flex";
+}
+
+function closeDetails(){
+    document.getElementById("detailsModal").style.display="none";
+}
+
+
+/* SEARCH + FILTER */
+
+function filterTable(){
+
+    const search =
+        document.getElementById("searchInput")
+        .value
+        .toLowerCase();
+
+    const status =
+        document.getElementById("statusFilter").value
+        .toLowerCase();
+
+    const urgency =
+        document.getElementById("urgencyFilter").value
+        .toLowerCase();
+
+    const care =
+        document.getElementById("careFilter").value
+        .toLowerCase();
+
+    const rows =
+        document.querySelectorAll("#referralTable tbody tr");
+
+    rows.forEach(row => {
+
+        const text =
+            row.innerText.toLowerCase();
+
+        const rowStatus =
+            row.cells[5].innerText.toLowerCase();
+
+        const rowUrgency =
+            row.cells[4].innerText.toLowerCase();
+
+        const rowCare =
+            row.cells[2].innerText.toLowerCase();
+
+        const matchesSearch =
+            text.includes(search);
+
+        const matchesStatus =
+            !status || rowStatus.includes(status);
+
+        const matchesUrgency =
+            !urgency || rowUrgency.includes(urgency);
+
+        const matchesCare =
+            !care || rowCare.includes(care);
+
+        row.style.display =
+            matchesSearch &&
+            matchesStatus &&
+            matchesUrgency &&
+            matchesCare
+            ? ""
+            : "none";
+    });
+}
+
+
+/* CSV IMPORT */
+
+function importCSV(){
+
+    alert(
+        "CSV Import selected.\n\n" +
+        "You can connect this button to your backend later."
+    );
+
+}
+
+
+/* EXPORT */
+
+function exportData(){
+
+    const csv =
+        "Patient,Age,Care Type,Assigned To,Urgency,Status\n" +
+        "Robert Johnson,73,Nursing,Alex Mercer,Low,Onboarded\n" +
+        "Emily Carter,58,Nursing,Noah Smith,Medium,Accepted\n" +
+        "Michael Lee,44,Dementia,Emma Watson,Low,Contacted";
+
+    const blob =
+        new Blob([csv], {type:"text/csv"});
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href=url;
+    a.download="referrals.csv";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+
+/* CLOSE MODAL WHEN CLICK OUTSIDE */
+
+window.onclick = function(event){
+
+    const addModal =
+        document.getElementById("addModal");
+
+    const detailsModal =
+        document.getElementById("detailsModal");
+
+    if(event.target === addModal){
+        closeAddModal();
+    }
+
+    if(event.target === detailsModal){
+        closeDetails();
+    }
+
+}
+
+</script>
+
+</body>
+</html>
